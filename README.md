@@ -8,10 +8,13 @@ Current Status: In Development<br><br>
 
 The software is designed for a human annotator to provide the approximate location of a crater feature, and the machine learning system measures and estimates the exact position and circumference of the feature (modeled as a perfect circle in pixel space). The desired user experience is to generate a good crater annotation with a single click.<br><br>
 
+
 Details
 -------
 
 * This is an experimental tool and a "weekend project" so development is very slow!
+
+* Everything is set up to deal with very small crater features; larger craters are not yet supported. If you are trying the software, please zoom in and try the software on the smallest craters you can see at your resolution. 
 
 * The machine learning code and environment is encapsulated in a docker container to  help control dependencies; however, docker itself is a dependency (see installation instructions).
 
