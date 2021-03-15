@@ -6,41 +6,30 @@ A crater-counting python plugin for `QGIS` augmented with machine learning to re
 
 Current Status: In Development<br><br>
 
-Features include:
-
-* Flexibility to crater count in a GIS environment on Windows, OS X, or Linux
-* Free software: BSD license
-* Three-click input defines crater rims as a circle
-* Projection independent
+The software is designed for a human annotator to provide the approximate location of a crater feature, and the machine learning system measures and estimates the exact position and circumference of the feature (modeled as a perfect circle in pixel space). The desired user experience is to generate a good crater annotation with a single click.<br><br>
 
 Details
 -------
 
-* This QGIS plugin is designed to offer an open source alternative to the
-  `craterTools`_ plugin for `ArcGIS`_.
+* This is an experimental tool and a "weekend project" so development is very slow!
 
-* `Crater counting`_ is a technique used by planetary scientists to estimate the
-  age of a surface.
-
-* Collaboration is welcome! Please see the Issues page and the CONTRIBUTING.rst
-  file.
-
-* CircleCraters was initially presented at the `2015 Lunar and Planetary Science
-  Conference`_
-
-* This plugin will be submitted to the QGIS plugin repository.
-
-* At this time the plugin does works on QGIS 3.16
+* The machine learning code and environment is encapsulated in a docker container to  help control dependencies; however, docker itself is a dependency (see installation instructions).
 
 Installation
 ------------
 
+https://github.com/AlliedToasters/craterfind
+
 1. First install QGIS.
 
-2. Download the contents of the git repository using the git clone command or
+2. Install docker and [run the craterfind server on your system](https://github.com/AlliedToasters/craterfind)::
+
+       $ docker run -p 8501:8501 alliedtoasters/craterfind:latest
+
+3. Download the contents of this git repository using the git clone command or
    downloading a zipfile.
 
-3. Use the makefile to compile and copy the files to the QGIS plugin directory
+4. Use the makefile to compile and copy the files to the QGIS plugin directory
    (run make deploy). 
 
    On GNU/Linux systems, the QGIS plugin directory should be in 
@@ -49,11 +38,11 @@ Installation
    On OSX system, the QGIS plugin directory should be in
    ~/Library/Application\ Support/QGIS/QGIS3/profiles/default/python/plugins/
 
-4. On the command line run::
+5. On the command line run::
 
        $ make deploy
 
-5. You may get see the following error messages::
+6. You may get see the following error messages::
 
        make: pyrcc5: Command not found.
 
@@ -83,11 +72,39 @@ Installation
    
    Notice that sphinx is keg-only by default. Please make sure that sphinx has been added to system PATH.
 
-6. Enable the plugin from the QGIS plugin manager. Go to Plugins > Manage and
+7. Enable the plugin from the QGIS plugin manager. Go to Plugins > Manage and
    Install Plugins. This will connect you to the official QGIS plugin
    repository, but also searches the QGIS plugin directory on your machine for
    plugins. Find Circle Craters in the list and select the checkbox to the left
    of the name.
+
+8. (HACKY TEMPORARY WORKAROUND): This plugin works with a vector layer (tracking crater annotations) and a raster layer, 
+   from which pixel values are sampled and passed to the machine learning model.
+   I'm not sure how to enable selecting the raster layer through the UI (yet),
+   so for now I am using this code snipped as a workaround. The snippet
+   will select the first raster layer it finds (arbitrary) so it is not ideal.
+   Open the plugin, select the vector layer through the UI, open the desired
+   raster layer, and then paste the following snippet into the python console
+   in your QGIS project to tell the plugin which raster layer to use:
+
+
+```python
+def is_raster_layer(layer):
+    if layer.type() != QgsMapLayer.RasterLayer:
+        return False
+    else:
+        return True
+
+
+def get_layer_choices():
+    root = QgsProject.instance().layerTreeRoot()
+    layers = root.findLayers()
+    return [layer.layer() for layer in layers if is_raster_layer(layer.layer())]
+
+cc = qgis.utils.plugins['CircleCraters']
+cc.raster_layer = get_layer_choices()[0]
+```
+
 
 Installation Tips for QGIS
 --------------------------
@@ -96,19 +113,3 @@ Installation Tips for QGIS
 you have not used it before for planetary data!
 
 Windows / Linux / MacOSX QGIS Installers: https://qgis.org/en/site/forusers/download.html
-
-Contributing
-------------
-
-Feedback, issues, and contributions are always gratefully welcomed. See the
-`contributing guide`_ for details.
-
-.. _QGIS: http://www.qgis.org
-.. _craterTools: http://hrscview.fu-berlin.de/software.html
-.. _ArcGIS: http://www.esri.com/software/arcgis
-.. _Crater counting: http://en.wikipedia.org/wiki/Crater_counting
-.. _2015 Lunar and Planetary Science Conference: http://www.hou.usra.edu/meetings/lpsc2015/pdf/1816.pdf
-.. _Instructions on QGIS.org: http://www2.qgis.org/en/site/forusers/download.html
-.. _Homebrew: http://brew.sh/
-.. _this tap: https://github.com/OSGeo/homebrew-osgeo4mac
-.. _contributing guide: https://github.com/sbraden/circle-craters/blob/master/CONTRIBUTING.rst
