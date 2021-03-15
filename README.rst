@@ -1,10 +1,10 @@
 ===============================
-circle-craters
+OneClick Crater Detection QGIS Plugin
 ===============================
 
 A crater-counting python plugin for `QGIS`_.
 
-Current Status: In Testing
+Current Status: In Development
 
 Originally written for and tested on QGIS version 2.6 (Brighton). Ported to python3/QGIS version 3.16.
 
