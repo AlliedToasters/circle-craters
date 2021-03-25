@@ -69,7 +69,7 @@ from CircleCraters.errors import CircleCraterError
 from CircleCraters.shapes import Point, Circle, DetectedCircle
 
 from CircleCraters.export_dialog import ExportDialog
-from CircleCraters.choose_layers_dialog import ChooseLayersDialog
+from CircleCraters.choose_layers_dialog import ChooseCountingLayerDialog, ChooseRasterLayerDialog
 #from CircleCraters.find_crater import DetectedCircle
 
 
@@ -113,8 +113,11 @@ class CircleCraters(object):
         self.export_dlg = ExportDialog()
         self.export_dlg.selected.connect(self.export)
 
-        self.choose_dlg = ChooseLayersDialog()
-        self.choose_dlg.selected.connect(self.on_layer_select)
+        self.choose_counting_dlg = ChooseCountingLayerDialog()
+        self.choose_counting_dlg.selected.connect(self.on_counting_layer_select)
+
+        self.choose_raster_dlg = ChooseRasterLayerDialog()
+        self.choose_raster_dlg.selected.connect(self.on_raster_layer_select)
 
         # Declare instance attributes
         self.actions = []
@@ -298,31 +301,56 @@ class CircleCraters(object):
         self.circle_action.setEnabled(False)
         self.layer = None
 
-    def is_valid_layer(self, layer):
+    def is_polygon_vector_layer(self, layer):
         if layer.type() != QgsMapLayer.VectorLayer:
             return False
 
         return layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
-    def get_layer_choices(self):
+    def is_raster_layer(self, layer):
+        if layer.type() != QgsMapLayer.RasterLayer:
+            return False
+        else:
+            return True
+
+    def get_counting_layer_choices(self):
         root = QgsProject.instance().layerTreeRoot()
         layers = root.findLayers()
-        return [layer.layer() for layer in layers if self.is_valid_layer(layer.layer())]
+        return [layer.layer() for layer in layers if self.is_polygon_vector_layer(layer.layer())]
+
+    def get_raster_layer_choices(self):
+        root = QgsProject.instance().layerTreeRoot()
+        layers = root.findLayers()
+        return [layer.layer() for layer in layers if self.is_raster_layer(layer.layer())]
 
     def show_layer_select(self):
-        """ Run method that lets users choose layer for crater shapefile.
-        Sets self.layer
+        """ Run method that lets users choose raster layer.
+        Sets self.raster_layer
         """
         try:
-            self.choose_dlg.show(self.get_layer_choices())
+            self.choose_counting_dlg.show(self.get_counting_layer_choices())
+        except CircleCraterError as error:
+            self.show_error(error.message)
+        try:
+            self.choose_raster_dlg.show(self.get_raster_layer_choices())
         except CircleCraterError as error:
             self.show_error(error.message)
 
-    def on_layer_select(self, layer):
+    def on_counting_layer_select(self, layer):
         self.layer = layer
         self.set_field_attributes()
 
         msg = 'The layer "{!s}" is set as the crater counting layer'
+        self.show_info(msg.format(layer.name()))
+
+        self.stop_action.setEnabled(True)
+        self.circle_action.setEnabled(True)
+        self.set_tool()
+
+    def on_raster_layer_select(self, layer):
+        self.raster_layer = layer
+
+        msg = 'The layer "{!s}" is set as the raster layer'
         self.show_info(msg.format(layer.name()))
 
         self.stop_action.setEnabled(True)

@@ -81,32 +81,17 @@ https://github.com/AlliedToasters/craterfind
    plugins. Find Circle Craters in the list and select the checkbox to the left
    of the name.
 
-8. (HACKY TEMPORARY WORKAROUND): This plugin works with a vector layer (tracking crater annotations) and a raster layer, 
-   from which pixel values are sampled and passed to the machine learning model.
-   I'm not sure how to enable selecting the raster layer through the UI (yet),
-   so for now I am using this code snipped as a workaround. The snippet
-   will select the first raster layer it finds (arbitrary) so it is not ideal.
-   Open the plugin, select the vector layer through the UI, open the desired
-   raster layer, and then paste the following snippet into the python console
-   in your QGIS project to tell the plugin which raster layer to use:
+8. Try using the plugin. Start QGIS - open an image (e.g., .tif) file to create a raster layer.
+    Create a "crater counting" layer. Go to Layer >  Create Layer > New Temporary Scratch Layer.
+    Name the layer and set Geometry Type to "Polygon." Set any other fields optionally.
+    Click "Select Crater Counting Layer" from the plugin GUI or from the "Plugins" menu
+    You should see two dialogs. Select the appropriate raster layer when prompted.
+    And select the appropriate crater counting layer when prompted.
+    If all goes well you can start clicking on tiny craters! The machine learning model's estimate
+    for the size and position of the crater will be populated into the crater counting layer.
+    (You may want to adjust settings for how the circles are displayed on your counting layer.)
+    
 
-
-```python
-def is_raster_layer(layer):
-    if layer.type() != QgsMapLayer.RasterLayer:
-        return False
-    else:
-        return True
-
-
-def get_layer_choices():
-    root = QgsProject.instance().layerTreeRoot()
-    layers = root.findLayers()
-    return [layer.layer() for layer in layers if is_raster_layer(layer.layer())]
-
-cc = qgis.utils.plugins['CircleCraters']
-cc.raster_layer = get_layer_choices()[0]
-```
 
 
 Installation Tips for QGIS

@@ -68,7 +68,8 @@ PY_FILES = \
 
 UI_FILES = \
 	export_dialog_base.ui \
-	choose_layers_dialog_base.ui
+	choose_counting_layer_dialog_base.ui \
+	choose_raster_layer_dialog_base.ui
 
 EXTRAS = icon.png metadata.txt
 

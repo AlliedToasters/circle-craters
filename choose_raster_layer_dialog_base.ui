@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ChooseLayersDialogBaseBase</class>
- <widget class="QDialog" name="ChooseLayersDialogBaseBase">
+ <class>ChooseRasterLayerDialogBaseBase</class>
+ <widget class="QDialog" name="ChooseRasterLayerDialogBaseBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label_1">
      <property name="text">
-      <string>Choose the crater layer:</string>
+      <string>Choose the raster layer:</string>
      </property>
     </widget>
    </item>
@@ -54,7 +54,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>accepted()</signal>
-   <receiver>ChooseLayersDialogBaseBase</receiver>
+   <receiver>ChooseRasterLayerDialogBaseBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -70,7 +70,7 @@
   <connection>
    <sender>button_box</sender>
    <signal>rejected()</signal>
-   <receiver>ChooseLayersDialogBaseBase</receiver>
+   <receiver>ChooseRasterLayerDialogBaseBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
