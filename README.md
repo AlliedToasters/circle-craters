@@ -1,4 +1,6 @@
-# OneClick Crater Detection QGIS Plugin
+# DetectCrater Crater Detection QGIS Plugin
+## Experimental Plugin for "OneClick" Crater Counting
+## Based on [circle-craters](https://github.com/sbraden/circle-craters) 
 
 NOTE: This codebase was forked in 2021 from [circle-craters](https://github.com/sbraden/circle-craters), a QGIS plugin for counting craters.<br><br>
 

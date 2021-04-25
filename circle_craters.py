@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
+ DetectCraters
+                                 A QGIS plugin prototype
+ An experimental crater measurement and counting tool for planetary science
+                              -------------------
+        begin                : 2020-10-01
+        author               : (C) 2020 by Michael Klear
+        email                : michael.r.klear@gmail.com
+
+ Code in this project is forked from:
  CircleCraters
                                  A QGIS plugin
  A crater counting tool for planetary science
